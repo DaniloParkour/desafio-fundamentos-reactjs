@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import filesize from 'filesize';
 
+import fileSize from 'filesize';
 import Header from '../../components/Header';
 import FileList from '../../components/FileList';
 import Upload from '../../components/Upload';
@@ -23,19 +24,59 @@ const Import: React.FC = () => {
   const history = useHistory();
 
   async function handleUpload(): Promise<void> {
-    // const data = new FormData();
+    const data = new FormData();
 
-    // TODO
+    uploadedFiles.map(file => data.append('file', file.file));
 
     try {
-      // await api.post('/transactions/import', data);
+      const files = data.getAll('file');
+
+      for (let i = 0; i < files.length; i += 1) {
+        const importFile = new FormData();
+        importFile.append('file', files[i]);
+        // await api.post('/transactions/import', importFile);
+        api.post('/transactions/import', importFile).then(response => {
+          importFile.delete('file');
+        });
+      }
+
+      setUploadedFiles([]);
+
+      console.log(`Upload Files ${uploadedFiles}`);
+
+      // for (const file of files) {
+      // const importFile = new FormData();
+      // importFile.append('file', file);
+      // await api.post('/transactions/import', importFile);
+      // }
+      // setUploadedFiles([]);
+    } catch (err) {
+      console.log(err.response.error);
+    }
+
+    /* try {
+      uploadedFiles.map(file => data.append('file', file.file));
+
+      for (const file of data.getAll('file')) {
+        const importFile = new FormData();
+        importFile.append('file', file);
+        // await api.post('/transactions/import', data);
+        api.post('/transactions/import', data).then(file => {});
+        importFile.delete('file');
+      }
     } catch (err) {
       // console.log(err.response.error);
-    }
+    } */
   }
 
   function submitFile(files: File[]): void {
-    // TODO
+    const newFiles: FileProps[] = files.map(file => ({
+      file,
+      name: file.name,
+      readableSize: fileSize(file.size),
+    }));
+
+    setUploadedFiles([...uploadedFiles, ...newFiles]);
   }
 
   return (

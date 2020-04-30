@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "axios": "^0.19.2",
+    "csv-parser": "^2.3.2",
     "filesize": "^6.1.0",
     "history": "^4.10.1",
+    "multer": "^1.4.2",
     "polished": "^3.5.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
