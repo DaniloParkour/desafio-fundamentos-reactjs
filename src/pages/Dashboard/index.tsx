@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({} as Balance);
 
-  function formatCurrency(value: number): string {
+  /* function formatCurrency(value: number): string {
     console.log(value);
 
     const formattedValue = new Intl.NumberFormat('pt-BR', {
@@ -70,11 +70,10 @@ const Dashboard: React.FC = () => {
     console.log(formattedValue);
 
     return formattedValue;
-  }
+  } */
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
-      console.log('INICIADO!');
       const response = await api.get<RequestBalance>('/transactions');
 
       console.log(`CONTEUDO RECEBIDO! ${response}`);
@@ -83,9 +82,9 @@ const Dashboard: React.FC = () => {
 
       const respTransac = response.data.transactions;
       const respBalance: Balance = {
-        income: formatCurrency(Number(response.data.balance.income)),
-        outcome: formatCurrency(Number(response.data.balance.outcome)),
-        total: formatCurrency(Number(response.data.balance.total)),
+        income: formatValue(Number(response.data.balance.income)),
+        outcome: formatValue(Number(response.data.balance.outcome)),
+        total: formatValue(Number(response.data.balance.total)),
       };
 
       setBalance(respBalance);
@@ -93,10 +92,16 @@ const Dashboard: React.FC = () => {
       const newTransac: Transaction[] = [];
 
       respTransac.map(transac => {
+        /*
         const valueFormmated = new Intl.NumberFormat('br-BR', {
           style: 'currency',
           currency: 'BRL',
         }).format(Number(transac.value * (transac.type === 'income' ? 1 : -1)));
+        */
+
+        const valueFormmated =
+          (transac.type === 'income' ? '' : '- ') +
+          formatValue(Number(transac.value));
 
         const dateFormated = new Intl.DateTimeFormat('pt-BR').format(
           new Date(transac.created_at),
